@@ -135,5 +135,11 @@
   <ItemGroup>
     <None Include="Resources\icons8-mute-64.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pepedance.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pepewhy.gif" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
