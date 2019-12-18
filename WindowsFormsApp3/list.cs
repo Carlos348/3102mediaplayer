@@ -48,12 +48,14 @@ namespace Mediapfunctions
     {
         Node<T> head;
         Node<T> tail;
-        int count = 0;
+        int count = -1;
 
         public DoubleLinkedList()
         {
             head = tail = null;
         }
+
+        
 
         public void AddFirst(T _Data)
         {
@@ -185,7 +187,21 @@ namespace Mediapfunctions
             {
                 return;
             }
-           
+        }
+        public T search(int index)
+        {
+            Node<T> curr = head;
+
+            if (index==0)
+            {
+                return curr.Data;
+            }
+            while (index!=count)
+            {
+                curr = curr.next;
+                index++;
+            }
+            return curr.Data;
         }
     }
 }

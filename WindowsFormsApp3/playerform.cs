@@ -32,7 +32,7 @@ namespace WindowsFormsApp3
 
         //fields for playlist
         public string[] files, paths;
-       
+        DoubleLinkedList<string> MyList = new DoubleLinkedList<string>();
 
         #endregion
 
@@ -88,6 +88,7 @@ namespace WindowsFormsApp3
                     {
                         
                         openFileDialog1.Filter = "Mp3 Files|*.mp3";
+                        openFileDialog1.Multiselect = false;
                         if (openFileDialog1.ShowDialog() == DialogResult.OK) 
                         {
                             PlayButtonClicked = false; ///to indicate if the playbutton was clicked so that next time it plays instead
@@ -178,6 +179,7 @@ namespace WindowsFormsApp3
         #region MuteButton
         private void button3_Click(object sender, EventArgs e)
         {
+
             if (MuteButtonClicked == false)
             {
                 outputDevice.Volume = 0.0f;
@@ -196,7 +198,7 @@ namespace WindowsFormsApp3
         #region volumebar
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-           volumebar.Scroll+=(low,high)=>outputDevice.Volume=volumebar.Value/10f;
+            volumebar.Scroll += (low, high) => outputDevice.Volume = volumebar.Value / 10f;
         }
         #endregion
 
@@ -243,21 +245,6 @@ namespace WindowsFormsApp3
 
         #endregion
 
-        #region skip back
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        #endregion
-
-        #region skip ahead
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-        #endregion
 
         #region goto mp4form
         private void openMp4ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -272,9 +259,11 @@ namespace WindowsFormsApp3
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e) //event when selecting from the list box
         {
             if (outputDevice == null)
-            {                              
-                    string filename = paths[listBox1.SelectedIndex]; //take the selected index and pass it to the array to pick out the path to the file we want to play
-                    outputDevice = new WaveOutEvent(); //initializing a output device of type waveoutevent
+            {
+
+                string filename = MyList.search(listBox1.SelectedIndex); //take the selected index and pass it to the array to pick out the path to the file we want to play
+               
+                outputDevice = new WaveOutEvent(); //initializing a output device of type waveoutevent
                     audioFile = new AudioFileReader(filename); //initializing an object of audiofile of type audiofilereader the refrences the path of the mp3 file
                     outputDevice.Init(audioFile); //loads the audiofile to the sound card
                     songtrack.Maximum = (int)audioFile.TotalTime.TotalSeconds; //makes the scale of the trackbar the same length as the 
@@ -285,16 +274,10 @@ namespace WindowsFormsApp3
             else
             {
                 outputDevice.Dispose();
-                try
-                {
-                    string filename = paths[listBox1.SelectedIndex]; //take the selected index and pass it to the array to pick out the path to the file we want to play
-                    outputDevice = new WaveOutEvent(); //initializing a output device of type waveoutevent
+
+                string filename = MyList.search(listBox1.SelectedIndex); //take the selected index and pass it to the array to pick out the path to the file we want to play
+                outputDevice = new WaveOutEvent(); //initializing a output device of type waveoutevent
                 audioFile = new AudioFileReader(filename); //initializing an object of audiofile of type audiofilereader the refrences the path of the mp3 file
-                }
-                catch (System.IndexOutOfRangeException)
-                {
-                    
-                }
                 
                 outputDevice.Init(audioFile); //loads the audiofile to the sound card
                 songtrack.Maximum = (int)audioFile.TotalTime.TotalSeconds; //makes the scale of the trackbar the same length as the 
@@ -303,11 +286,15 @@ namespace WindowsFormsApp3
                 timer1.Start(); //starts the timer for the pointer to start with the song
             }
         }
-        
+
+    
         private void button4_Click(object sender, EventArgs e)
         {
+
+            //listBox1.Items.Clear(); //clears items in playlist
             openFileDialog1.Multiselect = true; //for selecting multiple files
-            openFileDialog1.Filter = "Mp3 Files|*.mp3";
+            openFileDialog1.Filter = "Mp3 Files|*.mp3"; //filter 
+            
             
 
             if (openFileDialog1.ShowDialog()==DialogResult.OK)
@@ -315,11 +302,11 @@ namespace WindowsFormsApp3
                
                 files = openFileDialog1.SafeFileNames; //save file name
                 paths = openFileDialog1.FileNames; //save file path
-
-                for (int i = 0; i < files.Length; i++)
+               // int j = 0;
+                for (int i=0 ; i < files.Length; i++)
                 {
-                    listBox1.Items.Add(files[i]); //add file name to our listbox 
-                    
+                   MyList.AddEnd(paths[i]);
+                    listBox1.Items.Add(paths[i]); //add file name to our listbox 
                 }
             }
         }
